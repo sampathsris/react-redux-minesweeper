@@ -1,0 +1,38 @@
+
+.board-cell {
+    width: 24px;
+    height: 24px;
+    line-height: 16px;
+    background-color: white;
+    vertical-align: middle;
+    cursor: default;
+}
+
+.uncollapsed {
+    border-left: 2px solid rgb(228, 228, 228);
+    border-top: 2px solid rgb(228, 228, 228);
+    border-bottom: 2px solid grey;
+    border-right: 2px solid grey;
+}
+
+.collapsed {
+    border: 1px solid antiquewhite;
+    width: 26px;
+    height: 26px;
+}
+
+.board-cell.uncollapsed:hover {
+    background-color: aqua;
+}
+
+.board-row {
+    height: 28px;
+}
+
+.board {
+    background-color: antiquewhite;
+    margin: 10px auto;
+    text-align: center;
+    border-spacing: 0px;
+    border: 1px solid grey;
+}
