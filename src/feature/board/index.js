@@ -3,7 +3,8 @@ import React from 'react'
 import {connect} from 'react-redux'
 
 import './styles.css'
-import { collapseCellAndFollowThrough, toggleMarkCell } from './actions';
+import { toggleMarkCell, collapseCell } from './actions';
+import { getBombCounts } from './reducer';
 
 const handleMouseEvent = (fn) => e => {
     e.preventDefault()
@@ -44,74 +45,69 @@ function BoardCell({
 }) {
     let cursor = (!collapsed) || (collapsed && hasBomb && (!exploded))
         ? 'pointer' : 'default'
+    let className = `board-cell ${collapsed ? 'collapsed' : 'uncollapsed'}`
+    
     return (
         <td
-            className={`board-cell ${collapsed ? 'collapsed' : 'uncollapsed'}`}
-            style={{
-                cursor
-            }}
+            className={className}
+            style={{ cursor }}
             onClick={handleMouseEvent(handleClick)}
             onContextMenu={handleMouseEvent(handleRightClick)}
         >
         {
-            collapsed ? <CollapsedCellContent {...{hasBomb, exploded, bombCount}} /> : marked
+            collapsed
+                ? <CollapsedCellContent {...{hasBomb, exploded, bombCount}} />
+                : marked
         }
         </td>
     )
 }
 
-function BoardRow({
-    cellRow, handleClick, handleRightClick
-}) {
-    return (
-        <tr className="board-row">
-            {
-                cellRow.map(
-                    (cell, columnIndex) =>
-                        <BoardCell
-                            key={columnIndex}
-                            {...cell}
-                            handleClick={() => handleClick(columnIndex)}
-                            handleRightClick={() => handleRightClick(columnIndex)}
-                        />
-                )
-            }
-        </tr>
-    )
-}
-
 function Board({
-    cells, handleClick, handleRightClick
-}) {
+    rows, columns, cells, handleClick, handleRightClick
+}) {    
+    let cellRows = []
+
+    for (let i = 0; i < rows; i++) {
+        let cellRow = []
+
+        for (let j = 0; j < columns; j++) {
+            let index = i * rows + j
+            cellRow.push(
+                <BoardCell key={j}
+                    {...cells[index]}
+                    handleClick={() => handleClick(index)}
+                    handleRightClick={() => handleRightClick(index)}
+                />
+            )
+        }
+
+        cellRows.push(<tr key={i}>{cellRow}</tr>)
+    }
+
     return (
         <table className="board">
-            <tbody>
-            {
-                cells.map(
-                    (cellRow, rowIndex) =>
-                        <BoardRow
-                            key={rowIndex}
-                            cellRow={cellRow}
-                            handleClick={columnIndex => handleClick(rowIndex, columnIndex)}
-                            handleRightClick={columnIndex => handleRightClick(rowIndex, columnIndex)}
-                        />
-                )
-            }
-            </tbody>
+            <tbody>{cellRows}</tbody>
         </table>
     )
 }
 
 function mapStateToProps(state) {
+    let bombCounts = getBombCounts(state.board)
+
     return {
-        ...state.board
+        ...state.board,
+        cells: state.board.cells.map((cell, index) => ({
+            ...cell,
+            bombCount: bombCounts[index],
+        }))
     }
 }
 
 export default connect(
     mapStateToProps,
     {
-        handleClick: collapseCellAndFollowThrough(mapStateToProps),
+        handleClick: collapseCell,
         handleRightClick: toggleMarkCell,
     }
 )(Board)

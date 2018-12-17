@@ -1,11 +1,11 @@
 
 .board-cell {
-    width: 24px;
-    height: 24px;
-    line-height: 16px;
+    width: 36px;
+    height: 36px;
     background-color: white;
     vertical-align: middle;
     cursor: default;
+    overflow: hidden;
 }
 
 .uncollapsed {
@@ -13,12 +13,13 @@
     border-top: 2px solid rgb(228, 228, 228);
     border-bottom: 2px solid grey;
     border-right: 2px solid grey;
+    background-color: lightblue;
 }
 
 .collapsed {
     border: 1px solid antiquewhite;
-    width: 26px;
-    height: 26px;
+    width: 36px;
+    height: 36px;
 }
 
 .board-cell.uncollapsed:hover {
@@ -26,7 +27,7 @@
 }
 
 .board-row {
-    height: 28px;
+    height: 36px;
 }
 
 .board {
@@ -35,4 +36,6 @@
     text-align: center;
     border-spacing: 0px;
     border: 1px solid grey;
+    min-width: 260px;
+    min-height: 260px;
 }
